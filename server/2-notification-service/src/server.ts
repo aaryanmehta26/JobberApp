@@ -11,7 +11,7 @@ import { config } from './config';
 import { healthRoutes } from './routes';
 import { checkConnection } from './elasticsearch';
 import { createConnection } from './queues/connection';
-import { consumeAuthEmailMessages } from './queues/email.consumer';
+import { consumeAuthEmailMessages, consumeOrderEmailMessages } from './queues/email.consumer';
 
 const SERVER_PORT = 4001;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'notificationServer', 'debug');
@@ -26,6 +26,7 @@ export const start = (app: Application): void => {
 export const startQueues = async (): Promise<void> => {
   const emailChannel = await createConnection() as Channel;
   await consumeAuthEmailMessages(emailChannel);
+  await consumeOrderEmailMessages(emailChannel);
 };
 
 export const startElasticSearch = ():void => {
