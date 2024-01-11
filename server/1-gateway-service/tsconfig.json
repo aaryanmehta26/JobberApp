@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "jsx": "react-jsx",
+    "lib": ["dom", "ES2015"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "outDir": "build",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2021",
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "pretty": true,
+    "resolveJsonModule": true,
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
