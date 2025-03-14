@@ -12,10 +12,14 @@ import { isAxiosError } from 'axios';
 
 import { CustomError, IErrorResponse, winstonLogger } from '../../jobber-shared/src';
 
+import { config } from './config';
+import { elasticSearch } from './elasticsearch';
+import { appRoutes } from './routes';
+
 
 const SERVER_PORT = 4000;
 const DEFAULT_ERROR_CODE = 500;
-const log: Logger = winstonLogger('http://localhost:9200', 'apiGatewayServer', 'debug');
+const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 
 export class GatewayServer {
   private app: Application;
@@ -27,7 +31,7 @@ export class GatewayServer {
   public start(): void {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
-    this.routesMiddleware();
+    this.routesMiddleware(this.app);
     this.startElasticSearch();
     this.errorHandler(this.app);
     this.startServer(this.app);
@@ -38,15 +42,15 @@ export class GatewayServer {
     app.use(
       cookieSession({
         name: 'session',
-        keys: [],
+        keys: [`${config.SECRET_KEY_ONE}`, `${config.SECRET_KEY_TWO}`],
         maxAge: 24 * 7 * 3600000,
-        secure: false
+        secure: config.NODE_ENV !== 'development',
       })
     );
     app.use(hpp());
     app.use(helmet());
     app.use(cors({
-      origin: '',
+      origin: config.CLIENT_URL,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     }));
@@ -58,11 +62,12 @@ export class GatewayServer {
     app.use(urlencoded({extended: true, limit: '200mb'}));
   };
 
-  private routesMiddleware = (): void => {
-
+  private routesMiddleware = (app: Application): void => {
+    appRoutes(app);
   };
 
   private startElasticSearch(): void {
+    elasticSearch.checkConnection();
   }
 
   private errorHandler(app: Application): void {
