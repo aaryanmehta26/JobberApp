@@ -11,9 +11,7 @@ class HealthRoutes {
   }
 
   public routes(): Router {
-    console.log('$$$$');
-
-    this.router.get('gateway-health', Health.prototype.health);
+    this.router.get('/', Health.prototype.health);
     return this.router;
   }
 

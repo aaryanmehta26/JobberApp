@@ -19,6 +19,7 @@ class ElasticSearch {
   }
 
   public checkConnection = async (): Promise<void> => {
+
     let isConnected = false;
 
     while (!isConnected) {
